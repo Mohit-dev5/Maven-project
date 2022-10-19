@@ -11,7 +11,7 @@ pipeline {
         /*choice(name: "BRANCH_NAME", choices: ["Groovy-script", "main", "Dev", "Prod", "test", "qa","stage"],
                     description: "Sample multi-choice parameter to give branch name")
                }*/
-	    
+    } 
 	string(defaultValue:'Groovy-script', name:"BRANCH_NAME", trim: true)
 	
     stages {
