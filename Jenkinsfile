@@ -8,9 +8,11 @@ pipeline {
     parameters {
         choice(name: "GITHUB_URL", choices: ["production-repo-URL", "staging-repo-URL", "https://github.com/Mohit-dev5/Maven-project.git"], 
                     description: "Sample multi-choice parameter to pick the GITHUB URL")
-        choice(name: "BRANCH_NAME", choices: ["Groovy-script", "main", "Dev", "Prod", "test", "qa","stage"],
+        /*choice(name: "BRANCH_NAME", choices: ["Groovy-script", "main", "Dev", "Prod", "test", "qa","stage"],
                     description: "Sample multi-choice parameter to give branch name")
-               }
+               }*/
+	    
+	string(defaultValue:'stage',name:"BRANCH_NAME",trim: true)
 	
     stages {
         stage('Git Checkout') {
