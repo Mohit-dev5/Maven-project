@@ -12,7 +12,7 @@ pipeline {
                     description: "Sample multi-choice parameter to give branch name")
                }*/
 	    
-	string(defaultValue:'stage',name:"BRANCH_NAME",trim: true)
+	string(defaultValue:'Groovy-script', name:"BRANCH_NAME", trim: true)
 	
     stages {
         stage('Git Checkout') {
