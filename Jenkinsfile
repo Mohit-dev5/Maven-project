@@ -26,7 +26,6 @@ pipeline {
         stage ('Repo Content'){
           steps {
             sh 'ls -lart'
-            sh 'tree'
             sh 'pwd'
             }     
         }
