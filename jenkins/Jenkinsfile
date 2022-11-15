@@ -1,19 +1,43 @@
+def gv
+
 pipeline {
-    agent {
-        docker {
-            image 'maven:3-alpine'
-            args '-v /root/.m2:/root/.m2'
-        }
+  agent any
+     
+   environment {
+        registryName = "maven-registry"
+        registryCredential = 'ACR'
+        dockerImage = ''
+        registryUrl = 'defsloc.azurecr.io'
     }
+    
     stages {
-        stage('Build') {
+        stage("init") {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                script {
+                    sh "ls -la"
+                    sh "pwd"
+                    sh "whoami"
+                    sh "ls -la target/"
+                    gv = load "jenkins/script.groovy"
+                }
             }
         }
-        stage('Test') {
+      
+        stage("Build jar") {
             steps {
-                sh 'mvn test'
+                script {
+                    echo "building jar"
+                    gv.buildJar()
+                }
+            }
+        }
+
+        stage('Generate Junit Test Report') {
+            steps {
+              script {
+                    echo "generating report"
+                    gv.testReport()
+                }
             }
             post {
                 always {
@@ -21,10 +45,59 @@ pipeline {
                 }
             }
         }
-        stage('Deliver') {
+      
+        stage("Build Image") {
             steps {
-                sh './jenkins/scripts/deliver.sh'
+                script {
+                    echo "building image"
+                    gv.buildImage()
+                }
             }
         }
-    }
+      
+        
+        // Uploading Docker images into ACR
+        stage('Upload Image to ACR') {
+         steps{   
+             script {
+                 echo "Pushing Build image into ACR"
+                 gv.pushImage()
+            }
+          }
+        }
+      
+        // Stopping Docker containers for cleaner Docker run
+         stage('Stop Previous Containers') {
+             steps {
+               script {
+                gv.destroy()
+                }
+             }
+           }
+
+        stage('Docker Run') {
+         steps{
+             script {
+                gv.runImage()
+                }
+             }
+         }
+      
+        stage('Remove Unused docker image') {
+           steps{
+             script {
+                gv.deleteImage()
+              }
+           }
+        }
+      
+        stage("Deploy to Environment") {
+            steps {
+                script {
+                    echo "deploying"
+                    gv.deployApp()
+                }
+            }
+        }
+    }   
 }
