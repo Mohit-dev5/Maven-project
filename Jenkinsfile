@@ -1,6 +1,7 @@
 #!/usr/bin/env groovy
 
-@Library('javahome-demo')
+@Library('javahome-demo') _
+
 def gv
 
 pipeline {
@@ -21,11 +22,12 @@ pipeline {
         stage("init") {
             steps {
                 script {
-                    sh "ls -la"
-                    sh "pwd"
-                    sh "whoami"
-                    sh "ls -la target/"
-                    gv = load "jenkins/script.groovy"
+			'''
+                    	ls -la
+                    	pwd
+                    	whoami
+                    	gv = load "jenkins/script.groovy"
+		    	'''
                 }
             }
         }
